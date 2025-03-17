@@ -1,0 +1,43 @@
+name: test
+
+on:
+  push:
+    branches: [main, test-dev]
+  pull_request:
+    branches: [main]
+
+env:
+  secret: Release
+
+jobs:
+  branch-mark:
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: ./aeg_module
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build environment docker image
+        run: |
+          cd ..
+          docker build -t pwnlookup:latest .
+
+      - name: Test Format String Vulnerability
+        run: |
+          docker run -v /tmp:/test_res pwnlookup:latest bash -c 'cd /pwnlookup && python3 pwnlookup.py -f ./assets/simple_stack/rttl -t fmt_str'
+
+      - name: Get Format String Test Result
+        run: |
+          cat /tmp/test_result.txt
+
+      - name: Test Stack Overflow Vulnerability
+        run: |
+          docker run -v /tmp:/test_res pwnlookup:latest bash -c 'cd /pwnlookup && python3 pwnlookup.py -f ./assets/simple_stack/angstrom21_tranquil -t stack'
+
+      - name: Get Stack Overflow Test Result
+        run: |
+          cat /tmp/test_result.txt
+          
+      - name: Test UI Startup
+        run: |
+          docker run -v /tmp:/test_res pwnlookup:latest bash -c 'cd /pwnlookup && python3 pwnlookup.py --ui --help'

@@ -1,0 +1,14 @@
+# Core dependencies
+angr>=9.0.0
+claripy>=9.0.0
+networkx>=2.5
+pwntools>=4.5.0
+
+# UI dependencies
+prompt-toolkit>=3.0.0
+rich>=10.0.0
+
+# Optional dependencies
+z3-solver>=4.8.0
+capstone>=4.0.0
+pyelftools>=0.27 
